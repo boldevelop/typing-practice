@@ -1,5 +1,7 @@
 import { Role } from "../entities/role";
+import { User } from "../entities/user";
 import { Admin } from "../entities/admin";
+import { castTo } from "../entities/role-to-user";
 import { Client } from "../entities/client";
 import { Moderator } from "../entities/moderator";
 import { PrivilegedUser, User } from "../entities/user";
@@ -18,19 +20,16 @@ export default class UserService {
       return this.users;
     }
     const response = await this.fetch();
-    this.users = response.default.map((u: any) => {
-      const User = this.getConstructorByRole(u.role);
-      return User.from(u);
-    });
+    this.users = response.default.map((u: any) => User.check(u));
     return this.users;
   }
 
   async updateUserRole<R extends Role>(
-    user: Readonly<RoleToUser[R]>,
+    user: RoleToUser[R],
     newRole: R
   ) {
-    const User = this.getConstructorByRole(newRole);
-    this.users = this.users.map((u) => (u.id === user.id ? User.from(u) : u));
+    const newUser = castTo(newRole, user);
+    this.users = this.users.map((u) => (u.id === user.id ? newUser : u));
     return this.users;
   }
 
