@@ -6,19 +6,14 @@ import Actions from "./actions";
 import useUsers from "../../hooks/use-users";
 import useCurrentUser from "../../hooks/use-current-user";
 import { Table, Breadcrumb } from "antd";
-import { isPrivilegedUser, User } from "../../entities/user";
+import { User } from "../../entities/user";
 import { navigate, RouteComponentProps } from "@reach/router";
 
 export default function Dashboard(_: RouteComponentProps) {
   const currentUser = useCurrentUser();
   const [users, onUserUpdates] = useUsers();
 
-  if (!isPrivilegedUser(currentUser)) {
-    if (Boolean(currentUser)) {
-      navigate("/not-permission");
-      return null;
-    }
-
+  if (!User.guard(currentUser)) {
     navigate("/login");
     return null;
   }

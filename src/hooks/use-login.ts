@@ -2,7 +2,7 @@ import Services from "../services";
 import { navigate } from "@reach/router";
 import { useContext, useEffect } from "react";
 import { LogedInActionType, LogedInUser } from "../providers/loged-in-user";
-import type { LoggedUser, User } from "../entities/user";
+import type { User } from "../entities/user";
 import { Credentials, Email, Password } from "../entities/credentials";
 
 export default function useLogin(credentials: Credentials | null): User | null {
@@ -13,13 +13,21 @@ export default function useLogin(credentials: Credentials | null): User | null {
     if (!credentials || !dispatch) {
       return;
     }
-    loginService.login(
-      Email.from(credentials.email),
-      Password.from(credentials.password)
-    )
-      .then((user: LoggedUser) => dispatch!({ type: LogedInActionType.LOG_IN, payload: user }))
-      .then(() => navigate("/"))
-      .catch(e => alert(e.message));
+
+    try {
+      loginService
+        .login(
+          Email.check({ value: credentials.email }),
+          Password.check({ value: credentials.password })
+        )
+        .then((user: User) =>
+          dispatch!({ type: LogedInActionType.LOG_IN, payload: user })
+        )
+        .then(() => navigate("/"))
+        .catch((e) => alert(e.message));
+    } catch (e) {
+      alert(e);
+    }
   }, [credentials, dispatch, loginService]);
 
   return state.user;

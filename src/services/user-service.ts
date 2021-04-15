@@ -1,12 +1,14 @@
 import { Role } from "../entities/role";
-import { User } from "../entities/user";
 import { Admin } from "../entities/admin";
 import { castTo } from "../entities/role-to-user";
 import { Client } from "../entities/client";
 import { Moderator } from "../entities/moderator";
-import { PrivilegedUser, User } from "../entities/user";
+import { User } from "../entities/user";
 import type { RoleToUser } from "../entities/role-to-user";
-import { AVAILABLE_OPERATIONS, AVAILABLE_OPERATIONS_T } from "../entities/available-operations";
+import {
+  AVAILABLE_OPERATIONS,
+  AVAILABLE_OPERATIONS_T,
+} from "../entities/available-operations";
 
 export default class UserService {
   private users: readonly User[] = [];
@@ -24,10 +26,7 @@ export default class UserService {
     return this.users;
   }
 
-  async updateUserRole<R extends Role>(
-    user: RoleToUser[R],
-    newRole: R
-  ) {
+  async updateUserRole<R extends Role>(user: RoleToUser[R], newRole: R) {
     const newUser = castTo(newRole, user);
     this.users = this.users.map((u) => (u.id === user.id ? newUser : u));
     return this.users;
@@ -44,10 +43,12 @@ export default class UserService {
     }
   }
 
-  getAvailableOperations<U1 extends User, U2 extends PrivilegedUser>(
+  getAvailableOperations<U1 extends User, U2 extends User>(
     user: U1,
     currentUser: U2
   ) {
-    return AVAILABLE_OPERATIONS[currentUser.role][user.role] as AVAILABLE_OPERATIONS_T[U2["role"]][U1["role"]];
+    return AVAILABLE_OPERATIONS[currentUser.role][
+      user.role
+    ] as AVAILABLE_OPERATIONS_T[U2["role"]][U1["role"]];
   }
 }

@@ -1,32 +1,18 @@
-export type Credentials = {
-    email: string;
-    password: string;
-};
+import * as t from "runtypes";
 
-export class Email {
-    public static from(notValidEmail: Credentials['email']) {
-        if (typeof notValidEmail === 'string') {
-            return new Email(notValidEmail);
-        }
+export const Credentials = t.Record({ email: t.String, password: t.String });
+export type Credentials = t.Static<typeof Credentials>;
 
-        throw TypeError('Email not a string');
-    }
+export const Email = t
+  .Record({ value: t.String })
+  .asReadonly()
+  .withBrand("Email")
+  .withConstraint((email) => email.value.includes("@") || "Not valid Email");
+export type Email = t.Static<typeof Email>;
 
-    private readonly _type = Symbol("Email");
-
-    protected constructor(public readonly value: Credentials['email']) {}
-}
-
-export class Password {
-    public static from(notValidPassword: Credentials['password']) {
-        if (typeof notValidPassword === 'string') {
-            return new Password(notValidPassword);
-        }
-
-        throw TypeError('Password not a string');
-    }
-
-    private readonly _type = Symbol("password");
-
-    protected constructor(public readonly value: Credentials['password']) {}
-}
+export const Password = t
+  .Record({ value: t.String })
+  .asReadonly()
+  .withBrand("Password")
+  .withConstraint((pass) => pass.value.length > 3 || "Too short password");
+export type Password = t.Static<typeof Password>;
