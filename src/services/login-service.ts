@@ -1,5 +1,4 @@
-import { Email, Password } from "../entities/credentials";
-import { User } from "../entities/user";
+import { Email, Password, User } from "../entities";
 import UserService from "./user-service";
 
 export default class LoginService {

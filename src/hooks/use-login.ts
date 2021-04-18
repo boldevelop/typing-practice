@@ -2,8 +2,7 @@ import Services from "../services";
 import { navigate } from "@reach/router";
 import { useContext, useEffect } from "react";
 import { LogedInActionType, LogedInUser } from "../providers/loged-in-user";
-import type { User } from "../entities/user";
-import { Credentials, Email, Password } from "../entities/credentials";
+import { User, Email, Password, Credentials } from "../entities";
 
 export default function useLogin(credentials: Credentials | null): User | null {
   const { loginService } = useContext(Services);
