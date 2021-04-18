@@ -1,14 +1,33 @@
-import { Role } from "../entities/role";
-import { Admin } from "../entities/admin";
-import { castTo } from "../entities/role-to-user";
-import { Client } from "../entities/client";
-import { Moderator } from "../entities/moderator";
-import { User } from "../entities/user";
-import type { RoleToUser } from "../entities/role-to-user";
+import {
+  User,
+  Role,
+  Admin,
+  Client,
+  Moderator,
+  Email,
+  Password,
+} from "../entities";
+import { castTo, RoleToUser } from "../entities/role-to-user";
 import {
   AVAILABLE_OPERATIONS,
   AVAILABLE_OPERATIONS_T,
 } from "../entities/available-operations";
+
+// через контракт
+// const getUserByPassAndEmali = Contract(
+//   Array(User).asReadonly(),
+//   Email,
+//   Password,
+//   User
+// ).enforce((users, email, password) => {
+//   for (let u of users) {
+//     if (u.email === email.value && u.password === password.value) {
+//       return u;
+//     }
+//   }
+
+//   throw new Error("Password or email is incorrect");
+// });
 
 export default class UserService {
   private users: readonly User[] = [];
@@ -30,6 +49,20 @@ export default class UserService {
     const newUser = castTo(newRole, user);
     this.users = this.users.map((u) => (u.id === user.id ? newUser : u));
     return this.users;
+  }
+
+  getUserByPassAndEmali(
+    users: readonly User[],
+    email: Email,
+    password: Password
+  ): User {
+    for (let u of users) {
+      if (u.email === email.value && u.password === password.value) {
+        return u;
+      }
+    }
+
+    throw new Error("Password or email is incorrect");
   }
 
   getConstructorByRole(role: Role) {
