@@ -1,12 +1,4 @@
-import {
-  User,
-  Role,
-  Admin,
-  Client,
-  Moderator,
-  Email,
-  Password,
-} from "../entities";
+import { User, Role, Email, Password } from "../entities";
 import { castTo, RoleToUser } from "../entities/role-to-user";
 import {
   AVAILABLE_OPERATIONS,
@@ -63,17 +55,6 @@ export default class UserService {
     }
 
     throw new Error("Password or email is incorrect");
-  }
-
-  getConstructorByRole(role: Role) {
-    switch (role) {
-      case Role.ADMIN:
-        return Admin;
-      case Role.CLIENT:
-        return Client;
-      case Role.MODERATOR:
-        return Moderator;
-    }
   }
 
   getAvailableOperations<U1 extends User, U2 extends User>(
